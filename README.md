@@ -11,4 +11,4 @@ String obj = Verifier.forObject("hehehe")
                 .unless(String::isEmpty)
                 .verify();
 ```
-verifier applies all the given predicates and returns the object if verifications passes. throws an unchecked exception otherwise.
+verifier applies all given predicates and returns the object if verifications passes. throws an unchecked exception otherwise.
