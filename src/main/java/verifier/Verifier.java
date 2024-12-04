@@ -3,6 +3,7 @@ package verifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Verifier {
@@ -27,7 +28,7 @@ public class Verifier {
 
         public VerifierStep<T> unless(final VerifierFunction<T> application) {
             applications.add(application);
-            return new VerifierStep<T>(applications, obj);
+            return new VerifierStep<>(applications, obj);
         }
 
         public T verify() throws VerifierException {
@@ -39,6 +40,14 @@ public class Verifier {
                 throw new VerifierException("Verification failed for object: %s".formatted(obj.toString()));
             else
                 return obj;
+        }
+
+        public Optional<T> verifyMaybe() {
+            try {
+                return Optional.of(verify());
+            } catch (VerifierException e) {
+                return Optional.empty();
+            }
         }
 
         @Override

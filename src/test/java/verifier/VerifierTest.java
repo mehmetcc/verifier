@@ -2,6 +2,8 @@ package verifier;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -13,7 +15,7 @@ class VerifierTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenValidationFails() throws VerifierException {
+    void shouldThrowExceptionWhenValidationFails() {
         assertThatThrownBy(() -> Verifier.forObject(4).unless(object -> object == 4).verify()).isInstanceOf(VerifierException.class);
     }
 
@@ -25,5 +27,24 @@ class VerifierTest {
                 .verify();
 
         assertThat(obj).isInstanceOf(String.class).isEqualTo("hehehe");
+    }
+
+    @Test
+    void shouldReturnMaybeWhenValidationSucceeds() {
+        Optional<String> obj = Verifier.forObject("hehehe")
+                .unless(String::isBlank)
+                .unless(String::isEmpty)
+                .verifyMaybe();
+
+        assertThat(obj).isNotEmpty().hasValue("hehehe");
+    }
+
+    @Test
+    void shouldReturnEmptyWhenValidationFails() {
+        Optional<Integer> obj = Verifier.forObject(4)
+                .unless(object -> object == 4)
+                .verifyMaybe();
+
+        assertThat(obj).isEmpty();
     }
 }
